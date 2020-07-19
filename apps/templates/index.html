@@ -6,10 +6,15 @@
     <link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
     <script src="../static/layui/layui.js"></script>
     <script src="../static/echarts.min.js"></script>
-{#    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>#}
+    {#    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>#}
 
 </head>
 <body>
+<button type="button" class="layui-btn" id="test1" name="f1">
+    <i class="layui-icon" >&#xe67c;</i>上传图片
+</button>
+
+<a href="http://www.layui.com" class="layui-btn layui-btn-sm">类ui</a>
 
 <table id="demo" lay-filter="test"></table>
 
@@ -23,6 +28,68 @@
 </div>
 
 <script>
+    /**
+    layui.use('upload', function () {
+        var upload = layui.upload;
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#test1' //绑定元素
+            ,url: '/auth/upload_img/' //上传接口
+            ,method:'POST'
+            ,type:'file'
+            , done: function (res) {
+                //上传完毕回调
+            }
+            , error: function () {
+                //请求异常回调
+            }
+        });
+    });
+     **/
+
+    layui.use('upload', function(){
+        var $ = layui.jquery
+            ,upload = layui.upload;
+
+		//普通图片上传,商品参考图，共4张，第一张
+        var uploadInst = upload.render({
+            elem: '#test1'
+            ,url: '/auth/upload_img/'
+            ,accept:'images'
+            ,size:50000
+            ,before: function(obj){
+
+                obj.preview(function(index, file, result){
+
+                    $('#pic_1').attr('src', result);
+                });
+            }
+            ,done: function(data){
+                //如果上传失败
+                if(data.code > 0){
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+                var demoText = $('#picText_1');
+                demoText.html('<span style="color: #4cae4c;">上传成功</span>');
+                //将后台获取的图片地址传到前台存入隐藏控件中，随着表单一起提交
+                document.getElementById("pic_1_src").value = data.src;
+                console.log("图片地址："+data.src);
+            }
+            ,error: function(){
+                //演示失败状态，并实现重传
+                var demoText = $('#picText_1');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function(){
+                    uploadInst.upload();
+                });
+            }
+        });
+
+    });
+
+    //============================
     layui.use('table', function () {
         var table = layui.table;
 
