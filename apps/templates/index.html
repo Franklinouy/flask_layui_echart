@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>table模块快速使用</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
+    <script src="../static/layui/layui.js"></script>
+    <script src="../static/echarts.min.js"></script>
+{#    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>#}
+
+</head>
+<body>
+
+<table id="demo" lay-filter="test"></table>
+
+<div id="main" style="width: 600px;height:400px;"></div>
+
+<div class="layui-card">
+    <div class="layui-card-header"><i class="fa fa-line-chart icon"></i>报表统计(折线图)</div>
+    <div class="layui-card-body">
+        <div id="echarts-records" style="width: 100%;min-height:500px"></div>
+    </div>
+</div>
+
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+
+        //第一个实例
+        table.render({
+            elem: '#demo'
+            , height: 312
+            , url: '/auth/data/' //数据接口
+            , page: true //开启分页
+            , cols: [[ //表头
+                {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'}
+                , {field: 'username', title: '用户名', width: 80}
+                , {field: 'sex', title: '性别', width: 80, sort: true}
+                , {field: 'city', title: '城市', width: 80}
+                , {field: 'sign', title: '签名', width: 177}
+                , {field: 'experience', title: '积分', width: 80, sort: true}
+                , {field: 'score', title: '评分', width: 80, sort: true}
+                , {field: 'classify', title: '职业', width: 80}
+                , {field: 'wealth', title: '财富', width: 135, sort: true}
+            ]]
+            , done: function (res, curr, count) {
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                console.log(res);
+                //得到当前页码
+                console.log(curr);
+                //得到数据总量
+                console.log(count);
+                //==================
+                var myChart = echarts.init(document.getElementById('main'));
+                // 指定图表的配置项和数据
+                var option = {
+                    title: {
+                        text: 'ECharts 入门示例'
+                    },
+                    tooltip: {},
+                    legend: {
+                        data: ['销量']
+                    },
+                    xAxis: {
+                        data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
+                    },
+                    yAxis: {},
+                    series: [{
+                        name: '销量',
+                        type: 'bar',
+                        data: [5, 20, 36, 10, 10, 20]
+                    }]
+                };
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+                //==============
+                //渲染折线图
+
+                var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
+                // 显示标题，图例和空的坐标轴
+                //=====
+                option2 = {
+                    xAxis: {
+                        type: 'category',
+                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        data: [820, 932, 901, 934, 1290, 1330, 1320],
+                        type: 'line'
+                    }]
+                };
+
+                echartsRecords.setOption(option2);
+                //=====
+
+                /*
+                *
+                echartsRecords.setOption({
+                    title: {
+                        text: 'appCrash'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: ['ios_owner', 'ios_bus', 'ios_oa', 'android_owner', 'android_bus', 'android_oa']
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: []
+                    },
+                    yAxis: [
+                        {
+                            //设置类别
+                            type: 'value',
+                            //y轴刻度
+                            axisLabel: {
+                                //设置y轴数值为%
+                                formatter: '{value} %',
+                            },
+                        }
+                    ],
+                });
+                //渲染折线图
+                echartsRecords.setOption({
+                    xAxis: {
+                        data: res.Xtitle
+                    },
+                    series: res.appCrashZhexiantu
+                });
+                * */
+            }
+        });
+    });
+
+</script>
+</body>
+</html>
